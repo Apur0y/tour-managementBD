@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { User } from "./user.model";
+// import { User } from "./user.model";
 import httpStatus from "http-status-codes"
 import { createUserServices } from "./user.service";
 
@@ -12,6 +12,7 @@ const createUser = async(req:Request,res:Response, next:NextFunction)=>{
             user
         })
         
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error:any) {
         console.log(error);
         next(error)

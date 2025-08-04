@@ -7,7 +7,7 @@ let server: Server;
 const startServer = async () => {
   try {
     await mongoose.connect(
-      "mongodb+srv://mongodb:mongodb@mazerunner.l4kl7ya.mongodb.net/?retryWrites=true&w=majority&appName=MazeRunner"
+      "mongodb+srv://mongodb:mongodb@mazerunner.l4kl7ya.mongodb.net/tour-management?retryWrites=true&w=majority&appName=MazeRunner"
     );
     console.log("Connected To DB");
 
