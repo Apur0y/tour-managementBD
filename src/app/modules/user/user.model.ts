@@ -32,8 +32,7 @@ const userSchma = new Schema<IUser>({
     auths:[authProviderSchema]
 
 }, {
-    timestamps: true,
-    versionKey: false
+    timestamps: true
 })
 
 

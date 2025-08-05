@@ -33,7 +33,40 @@ const getTour = async (req: Request, res: Response) => {
   }
 };
 
+
+const updateTour=async(req: Request, res: Response)=>{
+  try {
+    const id=req.params.id;
+    const payload=req.body;
+    const result= await createTourService.updateTour(id,payload);
+      res.status(httpStatus.OK).json({
+      success: true,
+      message: "Tours updated successfully",
+      data: result,
+    });
+  } catch (error) {
+      res.status(500).json({
+      success: false,
+      message: "Failed to get tours",
+      error: (error as Error).message,
+    });
+  }
+}
+
+const deleteTour=async(req:Request,res:Response)=>{
+  const id=req.params.id;
+  const result = await createTourService.deleteTour(id);
+  res.status(httpStatus.OK).json({
+    success:true,
+    message: "Tour Deleted successfully",
+    data:result
+  })
+}
+
+
 export const TourControllers = {
   createTour,
   getTour,
+  updateTour,
+  deleteTour
 };

@@ -32,4 +32,5 @@ export interface IUser{
       auths:IAuthProvider[];     
       booking ?: Types.ObjectId[];
       guides?: Types.ObjectId[];
+      
 }
