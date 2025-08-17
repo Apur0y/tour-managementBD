@@ -14,6 +14,10 @@ included: Included[];
 excluded: Excluded[];
 amenities: string[];
 tourPlan: string[];
+tourTags?:string[],
+duartion?:string,
+maxPeople?:string,
+category?:string[]
 }
 
 // enum TourType {

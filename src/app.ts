@@ -1,6 +1,7 @@
 
 import express, { Request, Response } from "express"
 import cors from "cors"
+import cookieParser from "cookie-parser"
 // import { UserRoutes } from "./app/modules/user/user.route";
 import { router } from "./app/routes";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
@@ -9,7 +10,11 @@ import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 
 export const app=express();
 app.use(express.json());
-app.use(cors())
+app.use(cookieParser());
+app.use(cors({
+  origin: true, // Allow all origins for development, restrict in production
+  credentials: true // Allow cookies to be sent
+}))
 
 app.use("/api/v1",router)
 

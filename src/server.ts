@@ -11,8 +11,8 @@ const startServer = async () => {
     );
     console.log("Connected To DB");
 
-    server = app.listen(3000, () => {
-      console.log("Server Runnig on port 3000");
+    server = app.listen(1000, () => {
+      console.log("Server Runnig on port 1000");
     });
   } catch (error) {
     console.log(error);
