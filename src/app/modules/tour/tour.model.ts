@@ -19,6 +19,10 @@ const tourSchema = new Schema<ITour>({
   duartion: { type: String,},
   maxPeople: { type: String,},
   category: { type: [String], default: [] },
+  guide: { type: Schema.Types.ObjectId, ref: "User" },
+  isActive: { type: Boolean, default: true }
+}, {
+  timestamps: true
 });
 
 export const TourModel = model<ITour>("tours", tourSchema);

@@ -63,10 +63,29 @@ const deleteTour=async(req:Request,res:Response)=>{
   })
 }
 
+const getSingleTour=async(req:Request,res:Response)=>{
+  try {
+    const id=req.params.id;
+    const result = await createTourService.getSingleTours(id);
+    res.status(httpStatus.OK).json({
+      success:true,
+      message: "Tour Retrieved successfully",
+      data:result
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to get tour",
+      error: (error as Error).message,
+    });
+  }
+}
+
 
 export const TourControllers = {
   createTour,
   getTour,
   updateTour,
-  deleteTour
+  deleteTour,
+  getSingleTour
 };

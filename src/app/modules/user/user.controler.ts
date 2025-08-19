@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { UserServices } from "./user.service";
 import { catchAsync } from "../../utils/catchAsync";
+import { AppError } from "../../errorHelpers/AppError";
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
   const user = await UserServices.createUser(req.body);
@@ -72,9 +73,47 @@ const logoutUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateProfile = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user?._id; // Get user ID from auth middleware
+  
+  if (!userId) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "User not authenticated");
+  }
+
+  // Get file path if file was uploaded
+  const filePath = req.file ? `/uploads/profiles/${req.file.filename}` : undefined;
+  
+  const updatedUser = await UserServices.updateProfile(userId, req.body, filePath);
+  
+  res.status(httpStatus.OK).json({
+    success: true,
+    message: "Profile updated successfully!",
+    data: updatedUser,
+  });
+});
+
+const changePassword = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user?._id; // Get user ID from auth middleware
+  
+  if (!userId) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "User not authenticated");
+  }
+
+  const { currentPassword, newPassword } = req.body;
+  
+  await UserServices.changePassword(userId, currentPassword, newPassword);
+  
+  res.status(httpStatus.OK).json({
+    success: true,
+    message: "Password changed successfully!",
+  });
+});
+
 export const UserControllers = {
   createUser,
   loginUser,
   getUser,
   logoutUser,
+  updateProfile,
+  changePassword,
 };

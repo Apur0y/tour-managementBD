@@ -22,5 +22,6 @@ router.post("/create",validateRequest(tourValidation.createTourZodSchema), TourC
 router.get("/alltours",TourControllers.getTour)
 router.patch("/update/:id",TourControllers.updateTour)
 router.delete("/delete/:id",TourControllers.deleteTour)
+router.get("/:id",TourControllers.getSingleTour)
 
 export const TourRoutes =router;

@@ -157,8 +157,99 @@ const getUser = async (accessToken: string) => {
     throw new AppError(httpStatus.UNAUTHORIZED, "Invalid or expired token");
   }
 };
+const updateProfile = async (userId: string, payload: Partial<IUser>, filePath?: string) => {
+  const { name, phone, address } = payload;
+  
+  // Build update object
+  const updateData: any = {};
+  if (name !== undefined) updateData.name = name;
+  if (phone !== undefined) updateData.phone = phone;
+  if (address !== undefined) updateData.address = address;
+  if (filePath) updateData.picture = filePath;
+
+  // Check if user exists
+  const existingUser = await User.findById(userId);
+  if (!existingUser) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  // Check if user is active and not deleted
+  if (existingUser.isDeleted) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Cannot update deleted account");
+  }
+
+  if (existingUser.isActive !== "ACTIVE") {
+    throw new AppError(httpStatus.BAD_REQUEST, "Cannot update inactive account");
+  }
+
+  // Update user
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    updateData,
+    { new: true, runValidators: true }
+  ).select("-password");
+
+  if (!updatedUser) {
+    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to update profile");
+  }
+
+  return updatedUser;
+};
+
+const changePassword = async (userId: string, currentPassword: string, newPassword: string) => {
+  // Find user with password
+  const user = await User.findById(userId).select("+password");
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  // Check if user is active and not deleted
+  if (user.isDeleted) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Cannot change password for deleted account");
+  }
+
+  if (user.isActive !== "ACTIVE") {
+    throw new AppError(httpStatus.BAD_REQUEST, "Cannot change password for inactive account");
+  }
+
+  // Check if user has a password (for social login users)
+  if (!user.password) {
+    throw new AppError(httpStatus.BAD_REQUEST, "No password set for this account. Please set up a password first");
+  }
+
+  // Verify current password
+  const isCurrentPasswordValid = await comparePassword(currentPassword, user.password);
+  if (!isCurrentPasswordValid) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Current password is incorrect");
+  }
+
+  // Check if new password is different from current password
+  const isSamePassword = await comparePassword(newPassword, user.password);
+  if (isSamePassword) {
+    throw new AppError(httpStatus.BAD_REQUEST, "New password must be different from current password");
+  }
+
+  // Hash new password
+  const hashedNewPassword = await hashPassword(newPassword);
+
+  // Update password
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { password: hashedNewPassword },
+    { new: true }
+  ).select("-password");
+
+  if (!updatedUser) {
+    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to change password");
+  }
+
+  return updatedUser;
+};
+
 export const UserServices = {
   createUser,
   loginUser,
   getUser,
+  updateProfile,
+  changePassword,
 };

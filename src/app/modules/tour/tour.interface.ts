@@ -17,7 +17,11 @@ tourPlan: string[];
 tourTags?:string[],
 duartion?:string,
 maxPeople?:string,
-category?:string[]
+category?:string[],
+guide?: Types.ObjectId; // Tour guide/owner
+isActive?: boolean;
+createdAt?: Date;
+updatedAt?: Date;
 }
 
 // enum TourType {

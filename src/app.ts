@@ -16,6 +16,9 @@ app.use(cors({
   credentials: true // Allow cookies to be sent
 }))
 
+// Serve uploaded files statically
+app.use('/uploads', express.static('uploads'));
+
 app.use("/api/v1",router)
 
 

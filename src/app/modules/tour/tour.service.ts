@@ -22,6 +22,11 @@ const deleteTour=async(id:string)=>{
   return deleteTour;
 }
 
+const getSingleTours=async(id:string)=>{
+  const tour=await TourModel.findById(id);
+  return tour;
+}
+
 export const createTourService= {
-    createTour,getTour,updateTour,deleteTour
+    createTour,getTour,updateTour,deleteTour,getSingleTours
 }
